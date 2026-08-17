@@ -472,6 +472,49 @@
     };
 
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const videoInput = document.querySelector('input[type="file"]');
 
+  if (!videoInput) return;
+
+  videoInput.addEventListener("change", function () {
+    const file = this.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("video/")) {
+      alert("Please select a video file.");
+      this.value = "";
+      return;
+    }
+
+    const maxSize = 500 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      alert("Video size must be less than 500 MB.");
+      this.value = "";
+      return;
+    }
+
+    const video = document.createElement("video");
+    video.preload = "metadata";
+
+    video.onloadedmetadata = function () {
+      URL.revokeObjectURL(video.src);
+
+      if (video.duration > 30 * 60) {
+        alert("Video must be 30 minutes or shorter.");
+        videoInput.value = "";
+        return;
+      }
+
+      alert("Video selected successfully!");
+    };
+
+    video.src = URL.createObjectURL(file);
+  });
+});
+  </script>
 </body>
         </html>
