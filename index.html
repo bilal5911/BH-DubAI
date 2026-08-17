@@ -1,1 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BH DubAI</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    header {
+      text-align: center;
+      padding: 35px 10px;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      color: #6d4aff;
+    }
+
+    h1 {
+      font-size: 40px;
+      margin: 20px 0 10px;
+    }
+
+    .subtitle {
+      color: #687386;
+      font-size: 17px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .upload-box {
+      border: 2px dashed #b9c1d2;
+      border-radius: 18px;
+      padding: 45px 20px;
+      text-align: center;
+      cursor: pointer;
+      background: #fafbfe;
+    }
+
+    .upload-box:hover {
+      border-color: #6d4aff;
+      background: #f7f5ff;
+    }
+
+    .upload-icon {
+      font-size: 45px;
+    }
+
+    .upload-box h2 {
+      margin: 12px 0 8px;
+    }
+
+    .muted {
+      color: #748096;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-name {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d7dce7;
+      border-radius: 12px;
+      background: white;
+      font-size: 15px;
+    }
+
+    .voice-section {
+      margin-top: 22px;
+    }
+
+    .voices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .voice {
+      padding: 13px;
+      border: 1px solid #d7dce7;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .voice.active {
+      border-color: #6d4aff;
+      background: #f0edff;
+    }
+
+    .start-button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #6d4aff;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .start-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .status {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 12px;
+      background: #f0edff;
+    }
+
+    .progress {
+      height: 9px;
+      background: #ddd8f5;
+      border-radius: 10px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #6d4aff;
+      transition: width 0.3s;
+    }
+
+    @media (max-width: 650px) {
+      .options,
+      .voices {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <div class="logo">BH DubAI</div>
+
+      <h1>Make Your Video Speak Another Language</h1>
+
+      <p class="subtitle">
+        Natural human-like AI video dubbing
+      </p>
+    </header>
+
+    <div class="card">
+
+      <div class="upload-box" id="uploadBox">
+
+        <div class="upload-icon">🎬</div>
+
+        <h2>Upload Your Video</h2>
+
+        <div class="muted">
+          MP4, MOV or WebM • 1–30 minutes
+        </div>
+
+        <div class="file-name" id="fileName"></div>
+
+        <input
+          type="file"
+          id="videoInput"
+          accept="video/*"
+        >
+
+      </div>
+
+      <div class="options">
+
+        <div>
+          <label>Target Language</label>
+
+          <select id="language">
+
+            <option>Urdu</option>
+            <option>Hindi</option>
+            <option>English</option>
+            <option>Arabic</option>
+            <option>Spanish</option>
+            <option>French</option>
+            <option>German</option>
+            <option>Turkish</option>
+            <option>Portuguese</option>
+            <option>Italian</option>
+            <option>Chinese</option>
+            <option>Japanese</option>
+            <option>Korean</option>
+            <option>Russian</option>
+
+          </select>
+        </div>
+
+        <div>
+          <label>Speaker Mapping</label>
+
+          <select id="speaker">
+
+            <option>Auto / Mixed</option>
+            <option>Male → Male</option>
+            <option>Female → Female</option>
+            <option>Male → Female</option>
+            <option>Female → Male</option>
+
+          </select>
+        </div>
+
+      </div>
+
+      <div class="voice-section">
+
+        <label>Voice Style</label>
+
+        <div class="voices">
+
+          <button class="voice active">
+            Natural Human-like
+          </button>
+
+          <button class="voice">
+            Professional
+          </button>
+
+          <button class="voice">
+            Calm
+          </button>
+
+          <button class="voice">
+            Energetic
+          </button>
+
+        </div>
+
+      </div>
+
+      <button
+        class="start-button"
+        id="startButton"
+        disabled
+      >
+        Start AI Dubbing
+      </button>
+
+      <div class="status" id="status">
+
+        <b id="statusText">
+          Preparing...
+        </b>
+
+        <div class="progress">
+          <div
+            class="progress-bar"
+            id="progressBar">
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const uploadBox =
+      document.getElementById("uploadBox");
+
+    const videoInput =
+      document.getElementById("videoInput");
+
+    const fileName =
+      document.getElementById("fileName");
+
+    const startButton =
+      document.getElementById("startButton");
+
+    const status =
+      document.getElementById("status");
+
+    const statusText =
+      document.getElementById("statusText");
+
+    const progressBar =
+      document.getElementById("progressBar");
+
+
+    uploadBox.onclick = function() {
+      videoInput.click();
+    };
+
+
+    videoInput.onchange = function() {
+
+      const file = videoInput.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      const video =
+        document.createElement("video");
+
+      const url =
+        URL.createObjectURL(file);
+
+      video.preload = "metadata";
+
+      video.src = url;
+
+      video.onloadedmetadata = function() {
+
+        URL.revokeObjectURL(url);
+
+        const minutes =
+          video.duration / 60;
+
+        if (minutes < 1 || minutes > 30) {
+
+          fileName.textContent =
+            file.name +
+            " — " +
+            minutes.toFixed(1) +
+            " minutes. Video must be 1–30 minutes.";
+
+          fileName.style.color =
+            "#c0392b";
+
+          startButton.disabled = true;
+
+        } else {
+
+          fileName.textContent =
+            "✓ " +
+            file.name +
+            " — " +
+            minutes.toFixed(1) +
+            " minutes";
+
+          fileName.style.color =
+            "#237a4b";
+
+          startButton.disabled = false;
+
+        }
+
+      };
+
+    };
+
+
+    document
+      .querySelectorAll(".voice")
+      .forEach(function(button) {
+
+        button.onclick = function() {
+
+          document
+            .querySelectorAll(".voice")
+            .forEach(function(item) {
+              item.classList.remove("active");
+            });
+
+          button.classList.add("active");
+
+        };
+
+      });
+
+
+    startButton.onclick = function() {
+
+      startButton.disabled = true;
+
+      status.style.display = "block";
+
+      let progress = 0;
+
+      const timer =
+        setInterval(function() {
+
+          progress += 10;
+
+          progressBar.style.width =
+            progress + "%";
+
+          if (progress < 30) {
+
+            statusText.textContent =
+              "Detecting source language...";
+
+          } else if (progress < 60) {
+
+            statusText.textContent =
+              "Detecting speakers...";
+
+          } else if (progress < 85) {
+
+            statusText.textContent =
+              "Preparing AI voices...";
+
+          } else if (progress < 100) {
+
+            statusText.textContent =
+              "Synchronizing dubbed video...";
+
+          } else {
+
+            statusText.textContent =
+              "Ready for AI backend processing.";
+
+            clearInterval(timer);
+
+          }
+
+        }, 250);
+
+    };
+
+  </script>
+
+</body>
+        </html>
